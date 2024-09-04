@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "spidev.h": "c",
-        "types.h": "c",
-        "stat.h": "c",
-        "ioctl.h": "c",
-        "time.h": "c"
-    }
-}
