@@ -1,0 +1,65 @@
+(Google)c/c++语言命名规范
+1.文件命名
+文件名要全部小写, 可以包含下划线”_”
+例如:
+　　　　my_useful_class.cc
+2.类型命名(class,enum,struct,using,typedef)
+类型名称的每个单词首字母均大写, 不包含下划线
+例如:
+　　　　class UrlTable 
+　　　　class UrlTableTester
+　　　　enum UrlTableErrors
+　　　　struct UrlTableProperties 
+　　　　using PropertiesMap = hash_map<UrlTableProperties *, string>;
+　　　　typedef hash_map<UrlTableProperties *, string> PropertiesMap;
+3.变量命名
+变量,函数参数,数据成员名. 单词之间用下划线连接. 类成员变量以下划线结尾, 结构体的就不用.
+例如:
+　　　　a_local_variable
+　　　　a_struct_data_member
+　　　　a_class_data_member_
+　　　　
+　　　　string table_name;
+　　　　
+　　　　class TableInfo
+　　　　{
+　　　　private:
+　　　　  	string table_name_; 
+　　　　  	string tablename_;
+　　　　  	static Pool<TableInfo>* pool_;  
+　　　　};
+　　　　
+　　　　struct UrlTableProperties 
+　　　　{
+　　　　  string name;
+　　　　  int num_entries;
+　　　　  static Pool<UrlTableProperties>* pool;
+　　　　};
+4.常量命名
+静态变量或全局变量, 或在程序运行期间其值始终保持不变的, 命名时以 “k” 开头, 大小写混合
+例如:
+　　　　const int kDaysInAWeek = 7;
+
+
+5.函数命名
+函数名的每个单词首字母大写，词之间不使用下划线连接，函数名通常应以动词+名词
+例如;
+　　　　void CalculateSum(int a, int b);
+　　　　std::string GetUserName();
+　　　　bool IsValid();
+　　　　MyExcitingFunction();
+6.命名空间命名
+命名空间以小写字母命名. 最高级命名空间的名字取决于项目名称. 要注意避免嵌套命名空间的名字之间和常见的顶级命名空间的名字之间发生冲突.
+7.枚举成员命名
+枚举成员的命名应当和常量一致: kEnumName 
+例如:
+　　　　enum UrlTableErrors 
+　　　　{
+　　　　    kOK = 0,
+　　　　    kErrorOutOfMemory,
+　　　　    kErrorMalformedInput,
+　　　　};
+8.宏命名
+全部大写
+例如:
+		#define PI_ROUNDED 3.0
