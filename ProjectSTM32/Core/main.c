@@ -1,0 +1,5 @@
+#include "../Inc/stm32f10x.h"                  
+int main(void)
+{
+    return 0;
+}
