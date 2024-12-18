@@ -1,10 +1,15 @@
 import cv2
 import numpy as np
+import re
 images_file='image.jpg'
 # 配置参数
+labels={0:'Rectang',1:'Dimensions',2:'100',3:'40'}
+# labels= {0:"0",1:"1",2:"2",3:"3",4:"4",5:"5",6:"6",7:"7",8:"8",9:"9"},
+#"labels":{0:'Line',1:'DoubleArrow',2:'SingleArrow',3:'Round1',4:'Gear',5:'Rounds1',6:'Roughness',7:'Rectangle',8:'RoundAngle',9:'Nut',10:'Table',11:'Round2',12:'Line2',13:'Number1',14:'NUmber2',15:'NUmber3',16:'Rounds2',17:'Screw',18:'ArcRectangle',19:'Oval'},
 CONFIG = {
     "model_file": "./best.onnx",
-    "labels":{0:'Line',1:'DoubleArrow',2:'SingleArrow',3:'Round1',4:'Gear',5:'Rounds1',6:'Roughness',7:'Rectangle',8:'RoundAngle',9:'Nut',10:'Table',11:'Round2',12:'Line2',13:'Number1',14:'NUmber2',15:'NUmber3',16:'Rounds2',17:'Screw',18:'ArcRectangle',19:'Oval'},
+
+   
     "model_input_size": (640, 640),  # 模型输入尺寸 (H, W)
     "nms_threshold": 0.45,
     "confidence_threshold": 0.25,
@@ -12,7 +17,7 @@ CONFIG = {
 }
 class ObjectDetector:
     def __init__(self, config):
-        self.labels = config["labels"]
+        self.labels = labels
         self.model_file = config["model_file"]
         self.input_size = config["model_input_size"]
         self.nms_threshold = config["nms_threshold"]
@@ -83,6 +88,69 @@ class ObjectDetector:
             for i, (box, score, id_) in enumerate(zip(boxes, scores, ids), start=1):
                 x1, y1, x2, y2 = map(int, box)
                 print(f"目标 {i}: 类别={self.labels[id_]}, 置信度={score:.2f}, 坐标=({x1}, {y1}, {x2}, {y2})")
+       
+    def write_to_file(self,numbers, filename="rectangle.txt"):
+        try:
+            with open(filename, "w") as file:
+                for number in numbers:
+                    file.write(f"{number}\n")
+            print(f"数字已成功写入文件: {filename}")
+        except Exception as e:
+            print(f"写入文件时出错: {e}")
+
+    def extract_integer(self,label):
+        match = re.search(r'\d+', label)  # 使用正则表达式查找字符串中的数字部分
+        if match:
+            return int(match.group())  # 将匹配的数字部分转换为整数返回
+        return None  # 如果没有找到数字，返回 None
+    def input_num(self, ids):
+        numbers = []
+        for id_ in ids:
+            label = self.labels[id_]
+            extracted_number =self.extract_integer(label)
+            if extracted_number is not None:
+                numbers.append(extracted_number)
+        sorted_numbers = sorted(numbers, reverse=True)
+        self.write_to_file(sorted_numbers)
+
+
+class Datahandle:
+    def __init__(self,boxes,ids):
+            self.boxes=boxes
+            self.ids=ids
+    def label_sort(self,data_type):
+        result = []
+        for sublist in data_type:
+            if not sublist[0].isdigit():  # 判断第一个元素是否是字符
+                return True
+            return False
+    def get_data(self):
+        if len(self.boxes) == 0:
+            print("未识别到任何目标。")
+        else:
+            label_list=[]
+            num_list=[]
+            for i, (box,id_) in enumerate(zip(self.boxes,self.ids), start=1):
+                x1, y1, x2, y2 = map(int, box)
+                if self.label_sort(labels[id_]) == 0:
+                    label_list.append([labels[id_],(x1+x2)/2,(y1+y2)/2])
+                else:
+                    num_list.append([labels[id_],(x1+x1)/2,y1,(x1+x2)/2,y2,x1,(y1+y2)/2,x2,(y1+y2)/2])
+        self.num_list=num_list
+        self.label_list=label_list
+        return label_list,num_list
+    # def sort_data(num_list,label_list):
+    #     label_x=label_list[1]
+    #     label_y=label_list[2]
+    #     num_x=num_list[1]
+    #     num_y=num_list[2]
+    #     for x,y 
+    # def match_algorithm(self):
+    #     label_list_len=len(self.label_list)
+    #     i=1
+    #     while(i<label_list_len):
+    #         self.label_list[]
+
 
 def main(file_image, config):
     detector = ObjectDetector(config)
@@ -90,6 +158,24 @@ def main(file_image, config):
     original_shape = image.shape
     outputs = detector.infer(image)
     boxes, scores, ids = detector.post_process(outputs, original_shape)
-    detector.display_results(boxes, scores, ids)
+
+
+    Data=Datahandle(boxes,ids)
+    label_list,num_list =Data.get_data()
+    for label in enumerate(label_list):
+        print(label)
+    for label in enumerate(num_list):
+        print(label)
+
+    
+    cv2.imshow("test",image)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+
 # 执行
 main(images_file, CONFIG)
+# image=cv2.imread("./image.jpg")
+# cv2.rectangle(image, (183, 231), (200, 257), (0,0,255), 1)
+# cv2.imshow("Rectangle", image)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
