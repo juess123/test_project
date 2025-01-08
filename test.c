@@ -29,14 +29,6 @@ typedef struct MatchMode
     int compare_data_vertical=0;
     int match_error_num=1000;
 }MatchMode;
-struct Data
-{
-    char name[15];
-    int x1;
-    int y1;
-    int x2;
-    int y2;
-};
 Node* InitNode(void)
 {
     Node* T=(Node*)malloc(sizeof(Node));
@@ -291,45 +283,6 @@ void IndependentGraphProcessing(Node** line,Node* T)
         node=node->next;
     }
 }
-void DataDeduplication(struct Data* array,int len)
-{
-    int abs_1,abs_2,abs_sum;
-    for(int i=0;i<len;i++)
-    {
-        for(int j=i+1;j<len;j++)
-        {
-            if(strcmp(array[i].name,array[j].name)==0 && array[i].name[0]!='0')
-            {
-                
-                abs_1=abs(array[i].x1-array[j].x1)+(array[i].y1-array[j].y1);
-                abs_2=abs(array[i].x2-array[j].x2)+(array[i].y2-array[j].y2);
-                abs_sum=abs_1+abs_2;
-                if(abs_sum<40)
-                {
-                    array[j].name[0]='0';
-                }
-            }
-        }
-    }
-}
-struct Data* Round(struct Data* array,int len)
-{
-    int i,capacity;
-    while(i<len)
-    {
-        if(strcmp(array[i].name,"round")==0)capacity++;
-        i++;
-    }
-    struct Data* round=(struct Data*)(malloc(sizeof(struct Data)*capacity));
-    for(i=0;i<len;i++)
-    {
-        if(strcmp(array[i].name,"round")==0)
-        {
-            
-        }
-    }
-    return NULL;
-}
 void StraightLine(int* array,int len)
 {
     MatchMode mode={0};
@@ -416,8 +369,6 @@ int array[]=
     198, 973, 202, 916,
     334, 976, 337, 914,
     191, 916, 345, 912
-    
-
 // 592, 972, 595, 914,
 // 627, 970, 630, 915,
 // 435, 493, 672, 489,
@@ -510,13 +461,10 @@ int array[]=
 // 665, 1023, 673, 900
 };
     int len=(sizeof(array)/sizeof(int));
-    //DataDeduplication(array,len);
     StraightLine(array,len);
     
     Node* T=InitNode();
     
-
-
     AddNode(T,array,len);
 
     MyPrintf[0](&T,"init data");
@@ -524,7 +472,6 @@ int array[]=
     Node** line=LineHandle(T);
 
 
-    //IndependentLineProcessing(line,T);
     printf("\n%d\n",cumulative_error);
 
     MyPrintf[0](line,"3 line data");
