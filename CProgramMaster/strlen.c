@@ -21,7 +21,7 @@ int My_strlen(const char* str)
         if(((data-lomagic) & ~data & himagic)!=0)break;
     }
     p3=(const char*)(p2-1);
-    for(int i=0;i<8;i++)
+    for(int i=0;i<8;++i)
     {
         if(p3[i]==0)return p3-str+i;
     }
