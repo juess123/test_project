@@ -1,20 +1,19 @@
-//针对64位linux操作系统，long只有在linux上是8字节
 #include <stdio.h>
-int My_strlen(const char* str)
+int MyStrlen(const char* str)
 {
-    const char *p,*p3;
-    long* p2;
-    long himagic=0x808080808080;
-    long lomagic=0x010101010101;
-    long data;
-    for(p=str;((long)p & 7)!=0;++p)
+    const char *p1,*p3;
+    long int* p2;
+    long int himagic=0x808080808080;
+    long int lomagic=0x010101010101;
+    long int data;
+    for(p1=str;((long)p1 & 7)!=0;++p1)
     {
-        if(*p==0)
+        if(*p1==0)
         {
-            return p-str;
+            return p1-str;
         }
     }
-    p2=(long*)p;
+    p2=(long int*)p1;
     while(1)
     {
         data=*p2++;
@@ -29,8 +28,9 @@ int My_strlen(const char* str)
 }
 int main()
 {
-    const char* a="hahah";
-    int c=My_strlen(a);
+    const char* a="cd /home/scout/Documents/C_Pram/algorithm/strlen";
+    int c=MyStrlen(a);
     printf("%d",c);
     return 0;
 }
+//glibc库函数 处理的思想 就是 内存地址对齐 然后多字节比较。25-4-22
